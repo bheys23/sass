@@ -1627,12 +1627,10 @@ module Sass::Script
       unless %w[auto space comma].include?(separator.value)
         raise ArgumentError.new("Separator name must be space, comma, or auto")
       end
-      sep1 = list1.separator if list1.is_a?(Sass::Script::Value::List) && !list1.value.empty?
-      sep2 = list2.separator if list2.is_a?(Sass::Script::Value::List) && !list2.value.empty?
       Sass::Script::Value::List.new(
         list1.to_a + list2.to_a,
         if separator.value == 'auto'
-          sep1 || sep2 || :space
+          list1.separator || list2.separator || :space
         else
           separator.value.to_sym
         end)
@@ -1663,11 +1661,10 @@ module Sass::Script
       unless %w[auto space comma].include?(separator.value)
         raise ArgumentError.new("Separator name must be space, comma, or auto")
       end
-      sep = list.separator if list.is_a?(Sass::Script::Value::List)
       Sass::Script::Value::List.new(
         list.to_a + [val],
         if separator.value == 'auto'
-          sep || :space
+          list.separator || :space
         else
           separator.value.to_sym
         end)
@@ -1740,11 +1737,7 @@ module Sass::Script
     # @param $list [Sass::Script::Value::Base]
     # @return [Sass::Script::Value::String] `comma` or `space`
     def list_separator(list)
-      if list.is_a?(Sass::Script::Value::List)
-        Sass::Script::Value::String.new(list.separator.to_s)
-      else
-        Sass::Script::Value::String.new('space')
-      end
+      Sass::Script::Value::String.new((list.separator || :space).to_s)
     end
     declare :separator, [:list]
 
