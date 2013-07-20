@@ -29,6 +29,61 @@ Thanks to Alexander Pavlov for implementing this.
 
 [source maps]: https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit?hl=en_US&pli=1&pli=1
 
+### SassScript Maps
+
+SassScript has a new data type: maps. These are associations from SassScript
+values (often strings, but potentially any value) to other SassScript values.
+They look like this:
+
+    $map: (key1: value1, key2: value2, key3: value3);
+
+Unlike lists, maps must always be surrounded by parentheses. `()` is now an
+empty map in addition to an empty list.
+
+Maps will allow users to collect values into named groups and access those
+groups dynamically, without needing variable interpolation. For example, you
+could use them to manage themes for your stylesheet:
+
+    $themes: (
+      mist: (
+        header: #DCFAC0,
+        text:   #00968B,
+        border: #85C79C
+      ),
+      spring: (
+        header: #F4FAC7,
+        text:   #C2454E,
+        border: #FFB158
+      ),
+      // ...
+    );
+
+    @mixin themed-header($theme-name) {
+      h1 {
+        color: map-get(map-get($themes, $theme-name), header);
+      }
+    }
+
+There are a variety of functions for manpulating maps:
+
+* The {Sass::Script::Functions#map_get `map-get($map, $key)` function} returns
+  the value in the map associated with the given key. If no value is found, it
+  returns `null`.
+
+* The {Sass::Script::Functions#map_merge `map-merge($map1, $map2)` function}
+  merges two maps together into a new map. If there are any conflicts, the
+  second map takes precedence, making this a good way to modify values in a map
+  as well.
+
+* The {Sass::Script::Functions#map_keys `map-keys($map)` function} returns all
+  the keys in a map as a comma-separated list.
+
+* The {Sass::Script::Functions#map_values `map-values($map)` function} returns
+  all the values in a map as a comma-separated list.
+
+* The {Sass::Script::Functions#map_has_key `map-has-key($map, $key)` function}
+  returns whether or not a map has a key with the given name.
+
 ### Smaller Improvements
 
 * [listen](http://github.com/guard/listen) is now a standard Gem dependency.
